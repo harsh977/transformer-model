@@ -42,3 +42,12 @@ coverage.xml
 
 # Node frontend (if you have one in the same repo)
 node_modules/
+
+results/
+*.pt
+*.bin
+*.safetensors
+*.csv
+*.xlsx
+~$*.*
+
