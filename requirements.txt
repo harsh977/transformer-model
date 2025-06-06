@@ -1,0 +1,11 @@
+uvicorn
+pydantic
+python-dotenv
+motor
+pymongo
+pytz
+redis
+PyJWT
+pandas
+numpy
+email-validato
