@@ -7,9 +7,53 @@ import json
 import os
 
 from connection.connection import get_uploaded_files_collection
+# 1
 from controllers.display_total_assets import display_total_assets 
+# 2
+
+#3
+from controllers.show_vulnerable_asset_percentage import show_vulnerable_asset_percentage
+# 4
+from controllers.show_vulnerability_severity_counts import show_vulnerability_severity_counts
+# 5
+from controllers.display_assets_and_vulnerabilities import display_assets_and_vulnerabilities
+# 6
+from controllers.display_last_scanned_date import display_last_scanned_date
+# 7
 from controllers.display_vulnerability_pie_chart import display_vulnerability_pie_chart
- # You can add other controllers as needed
+# 8
+from controllers.display_vulnerability_trend import display_vulnerability_trend
+# 9
+from controllers.display_cvss_scores_and_risk import display_cvss_scores_and_risk
+# 10
+from controllers.list_recent_vulnerable_assets import list_recent_vulnerable_assets
+# 11
+from controllers.show_assets_not_scanned_recently import show_assets_not_scanned_recently
+# 12
+from controllers.display_assets_by_lab import display_assets_by_lab
+# 13
+from controllers.display_my_lab_assets_and_vulnerabilities import display_my_lab_assets_and_vulnerabilities
+# 14
+from controllers.show_vulnerability_remediation_progress import show_vulnerability_remediation_progress
+# 15
+from controllers.display_os_vs_application_vulnerabilities import display_os_vs_application_vulnerabilities
+# 16
+from controllers.display_vulnerability_history import display_vulnerability_history
+# 17
+from controllers.send_patch_update_notifications import send_patch_update_notifications
+# 18
+from controllers.display_highest_risk_assets import display_highest_risk_assets
+# 19
+from controllers.display_time_to_patch_critical_vulnerabilities import display_time_to_patch_critical_vulnerabilities
+
+
+
+
+
+
+
+
+# You can add other controllers as needed
 
 # FastAPI setup
 app = FastAPI()
@@ -100,18 +144,19 @@ async def predict_route(request: Request):
         return {"error": "Prompt is required."}
 
     intent, confidence = predict_intent(prompt)
+    print(f"Predicted intent: {intent}, Confidence: {confidence}")
     return {"prompt": prompt, "predicted_intent": intent, "confidence": round(confidence, 2)}
 
 @app.post("/analyze")
 async def analyze_prompt(request: Request):
     data = await request.json()
     prompt = data.get("prompt", "")
-
+    print("prompt is", prompt)
     if not prompt:
         return {"error": "Prompt is required."}
 
     intent_name, confidence = predict_intent(prompt)
-
+    print("intent_name is", intent_name)
     # Load records
     records_collection = await get_uploaded_files_collection()
     cursor = records_collection.find({})
@@ -125,6 +170,37 @@ async def analyze_prompt(request: Request):
         return await display_total_assets(records)
     elif intent_name == "display_vulnerability_pie_chart":
         return await display_vulnerability_pie_chart(records)
-
+    elif intent_name == "show_vulnerability_severity_counts":
+        return await show_vulnerability_severity_counts(records)
+    elif intent_name == "display_assets_and_vulnerabilities":
+        return await display_assets_and_vulnerabilities(records)
+    elif intent_name == "display_last_scanned_date":
+        return await display_last_scanned_date(records)
+    elif intent_name == "display_vulnerability_trend":
+        return await display_vulnerability_trend(records)
+    elif intent_name == "display_cvss_scores_and_risk":
+        return await display_cvss_scores_and_risk(records)
+    elif intent_name == "list_recent_vulnerable_assets":
+        return await list_recent_vulnerable_assets(records)
+    elif intent_name == "show_assets_not_scanned_recently":
+        return await show_assets_not_scanned_recently(records)
+    elif intent_name == "display_assets_by_lab":
+        return await display_assets_by_lab(records)
+    elif intent_name == "show_vulnerability_remediation_progress":
+        return await show_vulnerability_remediation_progress(records)
+    elif intent_name == "display_os_vs_application_vulnerabilities":
+        return await display_os_vs_application_vulnerabilities(records)
+    elif intent_name == "display_vulnerability_history":
+        return await display_vulnerability_history(records)
+    elif intent_name == "send_patch_update_notifications":
+        return await send_patch_update_notifications(records)
+    elif intent_name == "display_highest_risk_assets":
+        return await display_highest_risk_assets(records)
+    elif intent_name == "display_time_to_patch_critical_vulnerabilities":
+        return await display_time_to_patch_critical_vulnerabilities(records)
+    elif intent_name == "display_my_lab_assets_and_vulnerabilities":
+        return await display_my_lab_assets_and_vulnerabilities(records)
+    elif intent_name == "show_vulnerable_asset_percentage":
+        return await show_vulnerable_asset_percentage(records)
 
     return {"message": f"Intent '{intent_name}' not implemented yet."}

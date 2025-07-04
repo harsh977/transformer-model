@@ -3,14 +3,14 @@ from datetime import datetime
 
 def get_latest_assets(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Filter the DataFrame to keep only the latest entry for each unique asset (IP + Port).
+    Filter the DataFrame to keep only the latest entry for each unique asset (MAC Address).
     """
     df = df.copy()
     df['Plugin Modification Date'] = pd.to_datetime(df['Plugin Modification Date'], errors='coerce')
     
-    # Sort by date, then keep only the latest for each (IP, Port)
+    # Sort by date, then keep only the latest for each (MAC Address)
     df = df.sort_values(by='Plugin Modification Date', ascending=False)
-    latest_df = df.drop_duplicates(subset=['IP Address', 'Port'], keep='first')
+    latest_df = df.drop_duplicates(subset=['MAC Address'], keep='first')
     
     return latest_df
 
@@ -26,7 +26,7 @@ async def display_total_assets(records: list) -> dict:
         return {"message": "Data is empty"}
 
     latest_assets = get_latest_assets(df)
-    total_assets = latest_assets[['IP Address', 'Port']].drop_duplicates().shape[0]
+    total_assets = latest_assets[['MAC Address']].drop_duplicates().shape[0]
 
     return {
         "intent": "display_total_assets",
